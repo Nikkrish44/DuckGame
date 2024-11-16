@@ -34,16 +34,20 @@ score = 0
 font = pygame.font.Font(None, 36)  # Default font, size 36
 explosion_time = 0  # Time when the explosion was triggered
 
-
-# Timer for the duck's random reappearance
-last_appearance_time = pygame.time.get_ticks()
-duck_appear_delay = random.randint(3000, 7000)  # Random delay between 3 to 7 seconds for duck appearance
-
 #hide the system cursor
 pygame.mouse.set_visible(False)
 
 # Main loop
 running = True
+
+# Set weights for speeds: 
+speed_choices = [2, 3, 4, 5, 6]
+speed_weights = [4, 4, 4, 3, 2]  # Weights: higher value = higher likelihood
+
+mduck_speed = random.choices(speed_choices, weights=speed_weights, k=1)[0]
+def randomize_speed():
+    return random.choices(speed_choices, weights=speed_weights, k=1)[0]
+
 
 pygame.display.flip()
 while running:
@@ -54,22 +58,19 @@ while running:
             # Check if the click is within the duck's bounds
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height:
-                score += 10  # Increment score by 10 if duck is clicked
+                score += 10*mduck_speed  # Increment score by 10 if duck is clicked
                 savedx = mduck_x
                 savedy = mduck_y
-                mduck_x = -mduck_width
+                mduck_x = -(mduck_width + random.randint(1000, 2500))
+                mduck_speed = randomize_speed()  # Randomize speed after duck is clicked
                 explosion_time = time.time()
                 
-    current_time = pygame.time.get_ticks()
-
-    if mduck_x <= -mduck_width or current_time - last_appearance_time >= duck_appear_delay:
-        mduck_x = -mduck_width  # Reset duck position off-screen
-        last_appearance_time = current_time  # Update the last appearance time
-        duck_appear_delay = random.randint(3000, 7000)  # Set new random delay for next appearance
 
     mduck_x += mduck_speed
     if mduck_x > 1900:  # If the duck goes off the screen, reset its position
-        mduck_x = -mduck_width
+        mduck_x = -(mduck_width + random.randint(1000, 2500))
+        mduck_speed = randomize_speed()
+
    # Get the current mouse position
     mouse_x, mouse_y = pygame.mouse.get_pos()
     
@@ -77,9 +78,8 @@ while running:
     screen.fill((0, 0, 0))
     screen.blit(background, (0, 0))  # Draw the background image at (0, 0)
     
-    if explosion_time > 0 and time.time() - explosion_time < 0.19:  # Display explosion for 0.3 seconds
+    if explosion_time > 0 and time.time() - explosion_time < 0.19:  # Display explosion for 0.19 seconds
         screen.blit(explosion, (savedx + mduck_width // 2 - explosion_width // 2, savedy + mduck_height // 2 - explosion_height // 2))
-        mduck_x = -mduck_width
     else:
         explosion_time = 0  # Reset explosion time after 0.3 seconds
 
