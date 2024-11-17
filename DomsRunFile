@@ -20,20 +20,18 @@ def read_serial():
 			value5 = float(values[4])
 			value6 = float(values[5])
 			print(f"{value1:.2f}, {value2:.2f}, {value3:.2f}, {value4:.2f}, {value5:.2f}, {value6:.2f}") 
-
         		# Get the time difference (delta_time) to calculate velocity
         		current_time = time.time()
         		delta_time = current_time - previous_time
         		previous_time = current_time
-
         		# Integrate acceleration to get velocity (v = v0 + a*t)
-        		vel_x += value1 * delta_time
-        		vel_y += value2 * delta_time
-
+        		vel_x_a += value1 * delta_time
+        		vel_y_a += value2 * delta_time
+			vel_x_g += value4 * delta_time
+			vel_y_g += value3 * delta_time
         		# Integrate velocity to get displacement (d = d0 + v*t)
-        		mouse_x += vel_x * delta_time
-        		mouse_y += vel_y * delta_time
-
+        		mouse_x += (vel_x_a * delta_time * bigA) + (vel_x_g * delta_time * bigG)
+        		mouse_y += (vel_y_a * delta_time * bigA) + (vel_y_g * delta_time * bigG)
         		# Make sure the reticle stays on the screen (clamping)
         		mouse_x = max(0, min(mouse_x, target_width))
         		mouse_y = max(0, min(mouse_y, target_height))		
@@ -48,6 +46,10 @@ thread.start()
 
 # Initialize Pygame
 pygame.init()
+
+# Proportionality Contants for Accelerometer/GyroScope
+bigG = 1
+bigA = 1
 
 # Original and target resolutions
 original_width, original_height = 1900, 890
@@ -138,8 +140,10 @@ running = True
 explosion_time = 0
 
 # Set the Initial Reticle Position and Velocity
-vel_x = 0.0
-vel_y = 0.0
+vel_x_a = 0.0
+vel_y_g = 0.0
+vel_x_g = 0.0
+vel_y_a = 0.0
 mouse_x = target_width // 2
 mouse_y = target_height // 2
 
