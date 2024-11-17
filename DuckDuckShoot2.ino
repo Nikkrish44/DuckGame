@@ -9,12 +9,10 @@ void setup() {
 
 	// Try to initialize!
 	if (!mpu.begin()) {
-		Serial.println("Failed to find MPU6050 chip");
 		while (1) {
 		  delay(10);
 		}
 	}
-	Serial.println("MPU6050 Found!");
 
 	// set accelerometer range to +-8G
 	mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
