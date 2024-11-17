@@ -12,7 +12,15 @@ def read_serial():
 	while True:
 		if ser.in_waiting > 0:
 			line = ser.readline().decode('utf-8').strip()
-			# print("Received:",  line)
+			values = line.split(',')
+			value1 = float(values[0].strip())
+			value2 = float(values[1])
+			value3 = float(values[2])
+			value4 = float(values[3])
+			value5 = float(values[4])
+			value6 = float(values[5])
+			print(f"{value1:.2f}, {value2:.2f}, {value3:.2f}, {value4:.2f}, {value5:.2f}, {value6:.2f}") 
+	#print("Received:",  line)
 
 ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
 ser.flush()
