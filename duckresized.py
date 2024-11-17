@@ -71,10 +71,10 @@ pygame.mouse.set_visible(False)
 game_started = False
 
 # Speed weights
-speed_choices1 = [2.5*scale_x*0.05, 3*scale_x*0.05, 4*scale_x*0.05, 5*scale_x*0.05, 6*scale_x*0.05]
+speed_choices1 = [2.5*scale_x*0.2, 3*scale_x*0.2, 4*scale_x*0.2, 5*scale_x*0.2, 6*scale_x*0.2]
 speed_weights1 = [4, 4, 4, 3, 3]
 
-speed_choices2 = [2*scale_x*0.05, 3*scale_x*0.05, 4*scale_x*0.05, 5*scale_x*0.05]
+speed_choices2 = [2*scale_x*0.2, 3*scale_x*0.2, 4*scale_x*0.2, 5*scale_x*0.2]
 speed_weights2 = [4, 4, 4, 3]
 
 def randomize_speed1():
@@ -103,7 +103,7 @@ while running:
             if game_started and mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height and mduck_speed == 6*scale_x*0.05:
                 score += 18 * (mduck_speed/(scale_x*0.05))
                 savedx, savedy = mduck_x, mduck_y
-                mduck_x = -(mduck_width + random.randint(int(1500 * scale_x), int(3000 * scale_x)))
+                mduck_x = -(mduck_width + random.randint(int(1000 * scale_x), int(2000 * scale_x)))
                 mduck_y = random.randint(int(25 * scale_y), int(775 * scale_y))
                 mduck_speed = randomize_speed1()
                 explosion_time = time.time()
@@ -113,7 +113,7 @@ while running:
             elif game_started and mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height:
                 score += 10 * (mduck_speed/(scale_x*0.05))
                 savedx, savedy = mduck_x, mduck_y
-                mduck_x = -(mduck_width + random.randint(int(1500 * scale_x), int(3000 * scale_x)))
+                mduck_x = -(mduck_width + random.randint(int(200 * scale_x), int(400 * scale_x)))
                 mduck_y = random.randint(int(25 * scale_y), int(775 * scale_y))
                 mduck_speed = randomize_speed1()
                 explosion_time = time.time()
@@ -122,7 +122,7 @@ while running:
             elif game_started and mduck_left_x <= mouse_x <= mduck_left_x + mduck_left_width and mduck_left_y <= mouse_y <= mduck_left_y + mduck_left_height:
                 score += 10 * (mduck_left_speed/(scale_x*0.05))
                 savedx, savedy = mduck_left_x, mduck_left_y
-                mduck_left_x = target_width + random.randint(int(2800 * scale_x), int(3100 * scale_x))
+                mduck_left_x = target_width + random.randint(int(200 * scale_x), int(400 * scale_x))
                 mduck_left_y = random.randint(int(25 * scale_y), int(775 * scale_y))
                 mduck_left_speed = randomize_speed2()
                 explosion_time = time.time()
