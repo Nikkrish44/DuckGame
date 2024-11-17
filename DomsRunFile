@@ -20,6 +20,24 @@ def read_serial():
 			value5 = float(values[4])
 			value6 = float(values[5])
 			print(f"{value1:.2f}, {value2:.2f}, {value3:.2f}, {value4:.2f}, {value5:.2f}, {value6:.2f}") 
+
+        		# Get the time difference (delta_time) to calculate velocity
+        		current_time = time.time()
+        		delta_time = current_time - previous_time
+        		previous_time = current_time
+
+        		# Integrate acceleration to get velocity (v = v0 + a*t)
+        		vel_x += value1 * delta_time
+        		vel_y += value2 * delta_time
+
+        		# Integrate velocity to get displacement (d = d0 + v*t)
+        		mouse_x += vel_x * delta_time
+        		mouse_y += vel_y * delta_time
+
+        		# Make sure the reticle stays on the screen (clamping)
+        		mouse_x = max(0, min(mouse_x, target_width))
+        		mouse_y = max(0, min(mouse_y, target_height))		
+			
 	#print("Received:",  line)
 
 ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
@@ -119,12 +137,17 @@ def randomize_speed2():
 running = True
 explosion_time = 0
 
+# Set the Initial Reticle Position and Velocity
+vel_x = 0.0
+vel_y = 0.0
+mouse_x = target_width // 2
+mouse_y = target_height // 2
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
 
             # Check if the X button is clicked
             if int(target_width - x_button_width) <= mouse_x <= int(target_width) and 0 <= mouse_y <= x_button_height:
@@ -207,7 +230,6 @@ while running:
         score_text = font.render(f"Score: {int(score)}", True, (255, 255, 255))
         screen.blit(score_text, (int(900 * scale_x), int(800 * scale_y)))
 
-    mouse_x, mouse_y = pygame.mouse.get_pos()
     screen.blit(reticle, (mouse_x - reticle_width // 2, mouse_y - reticle_height // 2))
     pygame.display.flip()
 
