@@ -6,6 +6,9 @@ import time
 import random
 import serial #Arduino Input
 import threading #Serial Thread
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 #Global Variables
 previous_time = None
@@ -32,48 +35,32 @@ def read_serial():
 				value5 = float(values[4])
 				value6 = float(values[5])
 				print(f"{value1:.2f}, {value2:.2f}, {value3:.2f}, {value4:.2f}, {value5:.2f}, {value6:.2f}") 
+                # Spiral Variables
+                global mouse_x, mouse_y
+                # Move the reticle based on a spiral path (modify the values accordingly)
+                spiral_step = 0.01  # Step size for how quickly the spiral expands
 
-        			# Get the time difference (delta_time) to calculate velocity
-				global previous_time
-				global vel_x
-				global vel_y
-				global mouse_x
-				global mouse_y
-				global target_width
-				global target_height
-				global bigA
-				global bigG
+                # Update the angle and radius over time for the spiral path
+                global angle, radius, max_radius, spiral_turns
+                if 'angle' not in globals():
+                    angle = 0
+                    radius = 0
+                    max_radius = 10
+                    spiral_turns = 5
+                    num_points = 1000
+                    theta = np.linspace(0, spiral_turns * 2 * np.pi, num_points)
+                    radius_outward = np.linspace(0, max_radius, num_points // 2)
+                    radius_inward = np.linspace(max_radius, 0, num_points // 2)
+                    radius = np.concatenate((radius_outward, radius_inward))
+                    x = radius * np.cos(theta)
+                    y = radius * np.sin(theta)
 
-				
-				#current_time = time.time()
-				#if previous_time ==  None:
-				#	previous_time = current_time - 0.5
-
-				#delta_time = current_time - previous_time
-				#print({previous_time})
-				#previous_time = current_time
-				#print({delta_time})
-				#print({current_time})
-				# Set the Values
-				#value1 += 5
-				#value2 += 0
-				#if value1 <= 7 and value1 >= -7:
-				#	value1 = 0
-				#if value2 <= 7 and  value2 >=-7:
-				#	value2 = 0
-        			# Integrate acceleration to get velocity (v = v0 + a*t)
-				#vel_x = value1 * delta_time
-				#vel_y = value2 * delta_time
-				#print({vel_x})
-				#print({vel_y})
-        			# Integrate velocity to get displacement (d = d0 + v*t)
-				#mouse_x += vel_x * delta_time * bigA
-				#mouse_y += vel_y * delta_time * bigA
-				#print({mouse_x})
-				#print({mouse_y})
-        			# Make sure the reticle stays on the screen (clamping)
-				#mouse_x = max(0, min(mouse_x, target_width))
-				#mouse_y = max(0, min(mouse_y, target_height))
+                # Move to the next point in the spiral
+                angle += spiral_step
+                if angle >= len(x):
+                    angle = 0  # Restart the spiral once it reaches the end
+                mouse_x = int(target_width // 2 + x[int(angle)] * 20)  # 20 is a scale factor
+                mouse_y = int(target_height // 2 + y[int(angle)] * 20)
 						
 		except (ValueError, IndexError):
 			pass
@@ -116,6 +103,7 @@ x_button_width, x_button_height = int(50 * scale_x), int(50 * scale_y)  # Size o
 x_button = pygame.Surface((x_button_width, x_button_height))
 x_button.fill((255, 0, 0))  # Red color for the X button
 x_button_text = pygame.font.SysFont("Lucida Console", int(30 * scale_y)).render("X", True, (255, 255, 255))  # White "X" text
+
 
 # Ducks
 mduck = pygame.image.load("midduck.png")
