@@ -66,7 +66,7 @@ running = True
 
 # Set weights for speeds: 
 speed_choices1 = [2.5, 3, 4, 5, 6]
-speed_weights1 = [4, 4, 4, 3, 7]  # Weights: higher value = higher likelihood
+speed_weights1 = [4, 4, 4, 3, 1.5]  # Weights: higher value = higher likelihood
 
 def randomize_speed1():
     return random.choices(speed_choices1, weights=speed_weights1, k=1)[0]
