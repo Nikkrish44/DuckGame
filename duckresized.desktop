@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Duck Resized
+Comment=Run the duck resizing script
+Exec= /home/ddmurphy/duckresized.py
+Type=Application
+Terminal=true
+
