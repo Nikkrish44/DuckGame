@@ -13,6 +13,8 @@ vel_x = 0
 vel_y = 0
 mouse_x = 0
 mouse_y = 0
+bigA = 350
+bigG = 100 
 target_height = 320
 target_width = 480
 
@@ -23,8 +25,8 @@ def read_serial():
 			if ser.in_waiting > 0:
 				line = ser.readline().decode('utf-8').strip()
 				values = line.split(',')
-				value1 = float(values[0].strip())
-				value2 = float(values[1])
+				value1 = float(values[0].strip()) 
+				value2 = float(values[1]) 
 				value3 = float(values[2])
 				value4 = float(values[3])
 				value5 = float(values[4])
@@ -39,33 +41,40 @@ def read_serial():
 				global mouse_y
 				global target_width
 				global target_height
-				current_time = time.time()
-				if previous_time ==  None:
-					previous_time = current_time - 0.5
+				global bigA
+				global bigG
 
-				delta_time = current_time - previous_time
-				print({previous_time})
-				previous_time = current_time
-				print({delta_time})
-				print({current_time})
-				#Set a ceiling to avoid noise
-				if value1 <= 20:
-					value1 = 0
-				if value2 <= 20:
-					value2 = 0
+				
+				#current_time = time.time()
+				#if previous_time ==  None:
+				#	previous_time = current_time - 0.5
+
+				#delta_time = current_time - previous_time
+				#print({previous_time})
+				#previous_time = current_time
+				#print({delta_time})
+				#print({current_time})
+				# Set the Values
+				#value1 += 5
+				#value2 += 0
+				#if value1 <= 7 and value1 >= -7:
+				#	value1 = 0
+				#if value2 <= 7 and  value2 >=-7:
+				#	value2 = 0
         			# Integrate acceleration to get velocity (v = v0 + a*t)
-				vel_x += value1 * delta_time
-				vel_y += value2 * delta_time
-				print({vel_x})
-				print({vel_y})
+				#vel_x = value1 * delta_time
+				#vel_y = value2 * delta_time
+				#print({vel_x})
+				#print({vel_y})
         			# Integrate velocity to get displacement (d = d0 + v*t)
-				mouse_x += vel_x * delta_time
-				mouse_y += vel_y * delta_time
-				print({mouse_x})
-				print({mouse_y})
+				#mouse_x += vel_x * delta_time * bigA
+				#mouse_y += vel_y * delta_time * bigA
+				#print({mouse_x})
+				#print({mouse_y})
         			# Make sure the reticle stays on the screen (clamping)
-				mouse_x = max(0, min(mouse_x, target_width))
-				mouse_y = max(0, min(mouse_y, target_height))		
+				#mouse_x = max(0, min(mouse_x, target_width))
+				#mouse_y = max(0, min(mouse_y, target_height))
+						
 		except (ValueError, IndexError):
 			pass
 	
