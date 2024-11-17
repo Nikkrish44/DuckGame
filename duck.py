@@ -15,7 +15,14 @@ background = pygame.image.load("background.jpg")  # Replace with your background
 
 reticle = pygame.image.load("reticle.png")
 reticle_width, reticle_height = reticle.get_size()
- 
+
+
+# Load start button image (or create a simple rectangle as button)
+start_button = pygame.Surface((260, 100))  # Simple rectangle button
+start_button.fill((0, 255, 0))  # Green color for the start button
+start_button_text = pygame.font.SysFont("Lucida Console", 50).render("START", True, (255, 255, 255))
+
+
 #load first duck
 mduck = pygame.image.load("midduck.png")  # Replace with your duck image path
 mduck_width, mduck_height = mduck.get_size()
@@ -52,12 +59,14 @@ explosion_time = 0  # Time when the explosion was triggered
 #hide the system cursor
 pygame.mouse.set_visible(False)
 
+game_started = False
+
 # Main loop
 running = True
 
 # Set weights for speeds: 
 speed_choices1 = [2.5, 3, 4, 5, 6]
-speed_weights1 = [4, 4, 4, 3, 1]  # Weights: higher value = higher likelihood
+speed_weights1 = [4, 4, 4, 3, 7]  # Weights: higher value = higher likelihood
 
 def randomize_speed1():
     return random.choices(speed_choices1, weights=speed_weights1, k=1)[0]
@@ -78,10 +87,13 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
+               # Check if the user clicked the start button
+            if not game_started and start_button.get_rect(topleft=(800, 395)).collidepoint(mouse_x, mouse_y):
+                game_started = True  # Start the game
 
 
              # Check golden eagle case
-            if mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height and mduck_speed == 6:
+            if game_started and mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height and mduck_speed == 6:
                 score += 18*mduck_speed  # Increment score by 10 if duck is clicked
                 score = round(score)  # Ensures score is a whole number
                 savedx = mduck_x
@@ -93,7 +105,7 @@ while running:
                 bonus_time = time.time()
 
             # Check if the click is within the right moving duck's bounds
-            if mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height:
+            if game_started and mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height:
                 score += 10*mduck_speed  # Increment score by 10 if duck is clicked
                 score = round(score)  # Ensures score is a whole number
                 savedx = mduck_x
@@ -104,7 +116,7 @@ while running:
                 explosion_time = time.time()
                 
              # Check if the click is within the left moving duck's bounds
-            elif mduck_left_x <= mouse_x <= mduck_left_x + mduck_left_width and mduck_left_y <= mouse_y <= mduck_left_y + mduck_left_height:
+            elif game_started and mduck_left_x <= mouse_x <= mduck_left_x + mduck_left_width and mduck_left_y <= mouse_y <= mduck_left_y + mduck_left_height:
                 score += 10*mduck_left_speed  # Increment score by 10 if duck is clicked
                 score = round(score)  # Ensures score is a whole number
                 savedx = mduck_left_x
@@ -113,22 +125,22 @@ while running:
                 mduck_left_y = random.randint(25, 775)
                 mduck_left_speed = randomize_speed2()  # Randomize speed after duck is clicked
                 explosion_time = time.time()
-
+    if game_started:
     #move right moving duck           
-    mduck_x += mduck_speed
+        mduck_x += mduck_speed
 
-    if mduck_x > 1900+mduck_width:  # If the duck goes off the screen, reset its position
-        mduck_x = -(mduck_width + random.randint(1800, 3000))
-        mduck_y = random.randint(25, 775)
-        mduck_speed = randomize_speed1()
+        if mduck_x > 1900+mduck_width:  # If the duck goes off the screen, reset its position
+             mduck_x = -(mduck_width + random.randint(1800, 3000))
+             mduck_y = random.randint(25, 775)
+             mduck_speed = randomize_speed1()
 
-   #move left moving duck           
-    mduck_left_x -= mduck_left_speed
+            #move left moving duck           
+        mduck_left_x -= mduck_left_speed
 
-    if mduck_left_x < -mduck_left_width:  # If the duck goes off the screen, reset its position
-        mduck_left_x = +(mduck_left_width + random.randint(1800, 3000))
-        mduck_left_y = random.randint(25, 775)
-        mduck_left_speed = randomize_speed2()
+        if mduck_left_x < -mduck_left_width:  # If the duck goes off the screen, reset its position
+             mduck_left_x = +(mduck_left_width + random.randint(1800, 3000))
+             mduck_left_y = random.randint(25, 775)
+             mduck_left_speed = randomize_speed2()
 
    # Get the current mouse position
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -143,7 +155,11 @@ while running:
         explosion_time = 0  # Reset explosion time after 0.3 seconds
 
 
-    
+    # Draw the start button if the game hasn't started
+    if not game_started:
+        screen.blit(start_button, (800, 395))  # Position it in the center
+        screen.blit(start_button_text, (850, 420))  # Draw text inside button
+
     # Draw eagle if eagle is hit
     if(mduck_speed == 6):
         screen.blit(eagle, (mduck_x, mduck_y))
@@ -156,9 +172,9 @@ while running:
         bonus_text = bonus_font.render("BONUS!", True, (255, 215, 0))  # Gold colored text
         screen.blit(bonus_text, (1500, 500))  # Display the message above the score
 
-
-    score_text = font.render(f"Score: {score}", True, (255, 255, 255))  # White text
-    screen.blit(score_text, (1500, 800))  # Bottom right corner (adjust as needed)
+    if game_started:
+         score_text = font.render(f"Score: {score}", True, (255, 255, 255))  # White text
+         screen.blit(score_text, (1500, 800))  # Bottom right corner (adjust as needed)
 
 
     screen.blit(reticle, (mouse_x - reticle_width // 2, mouse_y - reticle_height // 2))  # Center the reticle
