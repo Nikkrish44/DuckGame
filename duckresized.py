@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+
 import pygame
 import time
 import random
@@ -26,6 +29,12 @@ reticle_width, reticle_height = reticle.get_size()
 start_button = pygame.Surface((int(250 * scale_x), int(100 * scale_y)))  # Scaled size
 start_button.fill((0, 150, 0))  # Green color for the start button
 start_button_text = pygame.font.SysFont("Lucida Console", int(50 * scale_y)).render("START", True, (255, 255, 255))
+
+# X button
+x_button_width, x_button_height = int(50 * scale_x), int(50 * scale_y)  # Size of the X button
+x_button = pygame.Surface((x_button_width, x_button_height))
+x_button.fill((255, 0, 0))  # Red color for the X button
+x_button_text = pygame.font.SysFont("Lucida Console", int(30 * scale_y)).render("X", True, (255, 255, 255))  # White "X" text
 
 # Ducks
 mduck = pygame.image.load("midduck.png")
@@ -93,14 +102,18 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            
+
+            # Check if the X button is clicked
+            if int(target_width - x_button_width) <= mouse_x <= int(target_width) and 0 <= mouse_y <= x_button_height:
+                running = False  # Exit the program
+
             if not game_started and start_button.get_rect(topleft=(int(550 * scale_x), int(395 * scale_y))).collidepoint(mouse_x, mouse_y):
                 game_started = True
 
 
 
             # Golden eagle check
-            if game_started and mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height and mduck_speed == 6*scale_x*0.05:
+            if game_started and mduck_x <= mouse_x <= mduck_x + mduck_width and mduck_y <= mouse_y <= mduck_y + mduck_height and mduck_speed == (6*scale_x*0.2):
                 score += 18 * (mduck_speed/(scale_x*0.05))
                 savedx, savedy = mduck_x, mduck_y
                 mduck_x = -(mduck_width + random.randint(int(1000 * scale_x), int(2000 * scale_x)))
@@ -153,7 +166,7 @@ while running:
         screen.blit(start_button_text, (int(600 * scale_x), int(420 * scale_y)))
 
     # Display ducks and eagle
-    screen.blit(eagle if mduck_speed == 6*scale_x*0.05 else mduck, (mduck_x, mduck_y))
+    screen.blit(eagle if mduck_speed == (6*scale_x*0.2) else mduck, (mduck_x, mduck_y))
     screen.blit(mduck_left, (mduck_left_x, mduck_left_y))
 
 
@@ -161,6 +174,11 @@ while running:
     if bonus_time > 0 and time.time() - bonus_time < 2:
         bonus_text = bonus_font.render("BONUS!", True, (255, 215, 0))
         screen.blit(bonus_text, (int(940 * scale_x), int(500 * scale_y)))
+
+    # Draw the X button in the top-right corner
+    screen.blit(x_button, (int(target_width - x_button_width), 0))  # Draw the button
+    screen.blit(x_button_text, (int(target_width - x_button_width // 2 - x_button_text.get_width() // 2), 
+    int(x_button_height // 2 - x_button_text.get_height() // 2)))  # Center the text
 
     if game_started:
         score_text = font.render(f"Score: {int(score)}", True, (255, 255, 255))
