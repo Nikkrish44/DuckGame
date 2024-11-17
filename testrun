@@ -9,6 +9,12 @@ import threading #Serial Thread
 
 #Global Variables
 previous_time = None
+vel_x = 0
+vel_y = 0
+mouse_x = 0
+mouse_y = 0
+target_height = 320
+target_width = 480
 
 # Threading Module for Serial Read
 def read_serial():
@@ -27,21 +33,31 @@ def read_serial():
 
         			# Get the time difference (delta_time) to calculate velocity
 				global previous_time
-				if previous_time ==  None:
-					previous_time = 0
-
+				global vel_x
+				global vel_y
+				global mouse_x
+				global mouse_y
+				global target_width
+				global target_height
 				current_time = time.time()
-				delta_time = current_time - previous_time
-				previous_time = current_time
+				if previous_time ==  None:
+					previous_time = current_time - 0.5
 
+				delta_time = current_time - previous_time
+				print({previous_time})
+				previous_time = current_time
+				print({delta_time})
+				print({current_time})
         			# Integrate acceleration to get velocity (v = v0 + a*t)
 				vel_x += value1 * delta_time
 				vel_y += value2 * delta_time
-
+				print({vel_x})
+				print({vel_y})
         			# Integrate velocity to get displacement (d = d0 + v*t)
 				mouse_x += vel_x * delta_time
 				mouse_y += vel_y * delta_time
-
+				print({mouse_x})
+				print({mouse_y})
         			# Make sure the reticle stays on the screen (clamping)
 				mouse_x = max(0, min(mouse_x, target_width))
 				mouse_y = max(0, min(mouse_y, target_height))		
@@ -143,15 +159,13 @@ def randomize_speed1():
 def randomize_speed2():
     return random.choices(speed_choices2, weights=speed_weights2, k=1)[0]
 
+#Set Cursor Position
+mouse_x = target_width // 2
+mouse_y = target_height // 2
+
 # Main loop
 running = True
 explosion_time = 0
-
-# Set the Initial Reticle Position and Velocity
-vel_x = 0.0
-vel_y = 0.0
-mouse_x = target_width // 2
-mouse_y = target_height // 2
 
 while running:
     for event in pygame.event.get():
@@ -163,7 +177,7 @@ while running:
             if int(target_width - x_button_width) <= stylus_x <= int(target_width) and 0 <= stylus_y <= x_button_height:
                 running = False  # Exit the program
 
-            if not game_started and start_button.get_rect(topleft=(int(550 * scale_x), int(395 * scale_y))).collidepoint(mouse_x, mouse_y):
+            if not game_started and start_button.get_rect(topleft=(int(550 * scale_x), int(395 * scale_y))).collidepoint(stylus_x, stylus_y):
                 game_started = True
 
 
