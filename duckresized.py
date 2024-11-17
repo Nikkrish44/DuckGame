@@ -7,7 +7,7 @@ pygame.init()
 
 # Original and target resolutions
 original_width, original_height = 1900, 890
-target_width, target_height = 480, 320
+target_width, target_height = 432, 288
 
 # Calculate scaling factors
 scale_x = target_width / (original_width*0.7)
@@ -15,7 +15,6 @@ scale_y = target_height / original_height
 
 # Set up the display
 screen = pygame.display.set_mode((target_width, target_height))
-pygame.display.set_caption("Reticle Following Cursor")
 
 # Load and scale images
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (target_width, target_height))
@@ -25,7 +24,7 @@ reticle_width, reticle_height = reticle.get_size()
 
 # Start button
 start_button = pygame.Surface((int(250 * scale_x), int(100 * scale_y)))  # Scaled size
-start_button.fill((0, 255, 0))  # Green color for the start button
+start_button.fill((0, 150, 0))  # Green color for the start button
 start_button_text = pygame.font.SysFont("Lucida Console", int(50 * scale_y)).render("START", True, (255, 255, 255))
 
 # Ducks
