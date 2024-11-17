@@ -48,6 +48,11 @@ def read_serial():
 				previous_time = current_time
 				print({delta_time})
 				print({current_time})
+				#Set a ceiling to avoid noise
+				if value1 <= 20:
+					value1 = 0
+				if value2 <= 20:
+					value2 = 0
         			# Integrate acceleration to get velocity (v = v0 + a*t)
 				vel_x += value1 * delta_time
 				vel_y += value2 * delta_time
