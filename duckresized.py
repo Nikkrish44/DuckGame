@@ -7,14 +7,14 @@ pygame.init()
 
 # Original and target resolutions
 original_width, original_height = 1900, 890
-target_width, target_height = 432, 288
+target_width, target_height = 480, 320
 
 # Calculate scaling factors
 scale_x = target_width / (original_width*0.7)
 scale_y = target_height / original_height
 
 # Set up the display
-screen = pygame.display.set_mode((target_width, target_height))
+screen = pygame.display.set_mode((target_width, target_height), pygame.FULLSCREEN)
 
 # Load and scale images
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (target_width, target_height))
